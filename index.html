@@ -105,6 +105,27 @@ body.tour-active{--tour-side:354px;--tour-bottom:144px;background:#071321}
 @media(max-height:620px) and (orientation:landscape){body.tour-active{--tour-side:278px;--tour-bottom:130px}.tour-active #stage{left:8px;right:calc(var(--tour-side) + 20px);top:calc(var(--header-height) + 8px);bottom:var(--tour-bottom)}.tour-panel{top:calc(var(--header-height) + 8px);bottom:var(--tour-bottom);left:auto;right:8px;width:var(--tour-side);height:auto;padding:12px}.tour-block{display:block}.tour-panel h2{font-size:19px}.tour-block p{font-size:12px;line-height:1.45}.tour-panel-note{display:none}.tour-player{padding:8px 11px;bottom:8px}.tour-controls{gap:5px}.tour-controls button,.tour-controls select{font-size:10px;padding:5px 7px;min-height:29px}.tour-controls .tour-play{min-width:80px}.tour-chapter-select{max-width:140px}.tour-splash h2{font-size:24px}.tour-splash p{font-size:11px}.tour-splash .tour-count-tag{margin-top:11px}.tour-shot-caption{font-size:10px}.tour-active #notice{max-width:calc(100vw - 310px)}}
 @media(prefers-reduced-motion:reduce){.tour-block{transition:none}}
 
+
+/* A área antes reservada aos comandos passa a fazer parte do cenário em tela cheia.
+   As regras não interferem no player nem nas legendas do vídeo dos riscos. */
+body.fullscreen-clean{--stage-bottom:0px}
+body.fullscreen-clean .scene-toolbar,
+body.fullscreen-clean>footer,
+body.fullscreen-clean .mobile-controls{display:none!important}
+body.fullscreen-clean:not(.tour-active) #stage{bottom:0!important}
+body.fullscreen-clean:not(.tour-active) #riskPanel{bottom:12px}
+body.fullscreen-clean:not(.tour-active) #proximity{bottom:18px}
+body.fullscreen-clean .top-actions #fullscreen{display:inline-flex;align-items:center;justify-content:center}
+body.fullscreen-clean #fullscreen{background:#294477;border-color:#89a9ff}
+
+/* Controls live in the clock panel; no new bottom bar in immersive fullscreen. */
+.vehicle-light-settings{border:1px solid #6f92d33b;border-radius:10px;background:#0b182b;padding:12px;margin:14px 0}
+.vehicle-light-label{display:block;color:#9eafd0;font-size:9px;letter-spacing:.7px;line-height:1.5}
+#vehicleLightStatus{display:block;font-size:12px;color:#c5d5ee;line-height:1.5;font-weight:500;margin:5px 0 10px}
+#vehicleLightStatus[data-state="on"]{color:#d9eaff}
+#blueRedzone{width:100%;font-size:12px;padding:9px;border-color:#5d8cff70}
+#blueRedzone.selected{background:#1853b8;color:#e5f1ff;box-shadow:inset 0 0 18px #398dff24}
+.vehicle-light-settings p{font-size:10px;color:#94accc;line-height:1.6;margin:9px 0 0}
 </style></head><body>
 <main id="stage" aria-label="Área de demonstração 3D"><canvas id="scene" aria-label="Maquete 3D para identificação de riscos de acidentes"></canvas><div id="sceneLoading" role="status"><span class="scene-spinner" aria-hidden="true"></span><span>Preparando o cenário 3D</span><small>Carregando modelos, texturas e iluminação.</small></div><div id="hotspots" aria-label="Pontos de risco no cenário"></div><button id="toggleRisks" class="marker-toggle" aria-controls="hotspots" aria-pressed="true" aria-label="Ocultar números" title="Ocultar números (N)"><span id="markerToggleLabel">Ocultar números</span><kbd>N</kbd></button><div class="tour-ui tour-scene-layer" aria-hidden="true">
  <div class="tour-shot-label"><i></i>VÍDEO GUIADO <b id="tourShotNumber">ABERTURA</b></div>
@@ -126,10 +147,10 @@ body.tour-active{--tour-side:354px;--tour-bottom:144px;background:#071321}
 <div id="notice" role="status"></div><div id="proximity" hidden><b id="proximityTitle"></b><span id="proximityText"></span><button id="examineNearby">Examinar <kbd>F</kbd></button></div>
 <footer><div class="operation-status"><div class="inspection-label"><b id="modeLabel">VISTORIA</b><span id="modeInstruction">Arraste para girar · role para aproximar</span></div><div class="telemetry"><span>Velocidade<b id="speed">0,0 <small>km/h</small></b></span><span>Garfos<b id="height">0,09 <small>m</small></b></span><span>Inclinação<b id="tilt">0,0 <small>°</small></b></span><span>Lateral<b id="shift">0 <small>cm</small></b></span></div><button id="pause" disabled>Pausar <kbd>P</kbd></button></div><div class="inspection-controls controls"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> Deslocar câmera</span><span><kbd>R</kbd><kbd>V</kbd> Subir / descer câmera</span><span><kbd>Shift</kbd> + arrastar · mover visão</span><span><kbd>M</kbd> Girar / linear</span></div><div class="drive-controls controls"><span><kbd>W</kbd><kbd>S</kbd> Frente / ré</span><span><kbd>A</kbd><kbd>D</kbd> Direção</span><span><kbd>Espaço</kbd> Freio</span><span><kbd>R</kbd><kbd>V</kbd> Subir / baixar</span><span><kbd>Q</kbd><kbd>E</kbd> Inclinar</span><span><kbd>Z</kbd><kbd>X</kbd> Deslocar garfos</span><span><kbd>L</kbd> Linha reta</span></div></footer>
 <div class="mobile-controls"><div class="drive-pad"><button data-key="KeyW" aria-label="Avançar">▲</button><div><button data-key="KeyA" aria-label="Virar à esquerda">◀</button><button data-key="Space" aria-label="Frear">■</button><button data-key="KeyD" aria-label="Virar à direita">▶</button></div><button data-key="KeyS" aria-label="Marcha à ré">▼</button></div><div class="fork-pad"><button data-key="KeyR">↑<small>Subir R</small></button><button data-key="KeyV">↓<small>Baixar V</small></button><button data-key="KeyQ">↶<small>Inclinar Q</small></button><button data-key="KeyE">↷<small>Inclinar E</small></button><button data-key="KeyZ">←<small>Lateral Z</small></button><button data-key="KeyX">→<small>Lateral X</small></button></div></div>
-<dialog id="helpDialog"><div class="dialog-head"><h2>Vistoriar os riscos</h2><button id="closeHelp">Fechar ✕</button></div><p>Observe o cenário e selecione os pontos numerados. Use “Onde está o risco?” para abrir o painel e expanda a explicação do ponto selecionado. “Revisado” registra apenas que você leu o ponto; não é uma nota nem uma aprovação de segurança.</p><h3>Vídeo dos riscos</h3><p>Use o botão “Vídeo dos riscos” no cabeçalho para assistir ao percurso automático pelas 19 situações. Espaço ou P: pausar e reproduzir. ← / →: mudar de situação. Esc: sair. A voz é opcional e depende de uma voz em português no dispositivo. “Gravar vídeo” gera um WebM com textos na imagem, sem áudio. Ao sair, as posições anteriores da frota são restauradas; uma condução anterior fica pausada.</p><div class="help-grid"><div><b>Vistoria</b><p>Arrastar · girar a câmera<br>Shift + arrastar ou botão direito · deslocamento linear<br>Arrastar: linear / tecla M · mover a visão com um dedo ou mouse<br>W A S D · percorrer o cenário sem girar<br>R / V · subir / descer a câmera<br>Dois dedos · deslocar e aproximar<br>Roda do mouse · aproximar<br>← / → · situação anterior / próxima<br>Ocultar painel · ampliar a área de demonstração<br>Ocultar números / Mostrar números · ativar ou desativar as bolas numeradas<br>N · alternar a exibição dos números</p></div><div><b>Condução opcional</b><p>W / S ou ↑ / ↓ · frente / ré<br>A / D · direção<br>L · manter / liberar condução em linha reta<br>Espaço · freio<br>R / V · subir / baixar garfos<br>Q / E · inclinação<br>Z / X · deslocamento lateral<br>C · externa / cabine / aérea<br>T · trocar empilhadeira<br>P · pausar · F · examinar risco próximo</p></div></div><label>Qualidade gráfica <select id="quality"><option value="high">Realista · sombras de contato e alta definição</option><option value="medium">Equilibrada · sombras e antisserrilhado</option><option value="low">Leve · sem sombras</option></select></label><p><button id="sound">Som: desligado</button></p><div class="sources"><b>Horário e iluminação</b><p>O relógio no cabeçalho mostra o horário em formato de 24 horas e o período do dia. No modo automático, usa o relógio do dispositivo convertido para America/Sao_Paulo. Clique no relógio para digitar de 00:00 a 23:59, arrastar a barra ou simular dia e noite. “Hora de São Paulo” restaura o horário atual. A simulação manual não altera a data nem o relógio do computador.</p><p>A iluminação solar e os horários de nascer e pôr do sol são estimados para a data, em um ponto de referência da cidade de São Paulo. O norte do cenário, a lua e a iluminação artificial são ilustrativos: não representam orientação medida, meteorologia ao vivo ou um laudo luminotécnico. Durante a noite, as luminárias e os faróis tornam-se mais intensos.</p><b>Fidelidade e interpretação</b><p>Logos Sesé menores e centralizadas nas laterais e na traseira das 11 empilhadeiras, com margens dentro das áreas de aplicação.</p><p>Revisão 13: as 11 empilhadeiras foram reconstruídas a partir das fotos da RX20-16 de carroceria arredondada: contrapeso compacto, laterais prateadas, cabine arqueada, rodas dianteiras menores e pneus traseiros duplos centrais. As proporções seguem a ficha técnica dessa geração; os detalhes visuais são uma reconstrução das referências. Identidade Sesé aplicada nas laterais e na traseira.</p><p>Revisão 12: fachadas inspiradas na foto do galpão, com chapas verticais escuras, pilares em I, faixas superiores translúcidas, contraventamentos, dutos e luminárias. O acabamento foi adaptado às paredes existentes; as posições das situações de risco foram mantidas.</p><p>Revisão 11: identidade Sesé, materiais com relevo, concreto com juntas e desgaste discreto, acabamento industrial, sombras de maior definição e iluminação com resposta diferente para madeira, borracha, vidro e metal. A disposição dos riscos e os comandos da revisão anterior foram mantidos. Em computadores mais lentos, selecione Equilibrada ou Leve.</p><p>As fotografias e o vídeo enviados orientaram a disposição dos objetos. As condições perigosas visíveis foram mantidas, incluindo pessoas, pilhas, derramamentos, rampas e docas. Todas as empilhadeiras, inclusive as que tinham outro formato na maquete, foram representadas pelo modelo RX20-16, agora identificado com a logo Sesé fornecida.</p><p>Os três caminhões seguem a referência do Scania azul Sesé, com cavalo mecânico e carreta de lona. O piso da armazenagem e o pátio inferior foram ampliados, com mais espaço livre para circular. As cadeiras e os bancos externos foram retirados. As situações junto às carretas acompanham as novas posições. As onze empilhadeiras possuem operadores sentados com o mesmo uniforme amarelo e azul, faixas refletivas, mãos junto aos comandos e pés na cabine. Os personagens mantêm rosto texturizado, roupas contínuas e contatos revisados com caixas, pallets e estruturas. Os personagens usam proporções humanas e uniformes amarelos e azuis com faixas refletivas, conforme a foto de referência adicional. A mancha azul do corredor foi identificada pelo usuário como óleo e aparece em marrom-escuro no 3D. No ponto 17, o esmagamento sob o pallet foi reconstituído conforme o relato adicional do responsável, com sangue nas roupas e no piso. A galeria e as fotografias foram retiradas desta interface para ampliar a demonstração.</p><p>Sem planta ou medidas, o 3D é uma reconstrução proporcional, não uma cópia métrica. Os textos distinguem o que é visível das consequências possíveis; não atestam peso, capacidade, substância, infração normativa ou causa de acidente não demonstrados pelas imagens.</p><p>Orientação geral para discussão: <a href="https://www.hse.gov.uk/workplacetransport/information/loading.htm" target="_blank" rel="noopener">HSE · operações de carga e descarga</a> e <a href="https://www.hse.gov.uk/workplacetransport/about.htm" target="_blank" rel="noopener">HSE · circulação no local de trabalho</a>. O simulador não substitui análise técnica ou treinamento supervisionado. As apostilas MTM foram mantidas como contexto; não há cálculo MTM neste exercício.</p></div><a class="download" href="simulador_sese_galpao.html" download="simulador_sese_galpao.html">Baixar simulador completo em HTML</a></dialog>
+<dialog id="helpDialog"><div class="dialog-head"><h2>Vistoriar os riscos</h2><button id="closeHelp">Fechar ✕</button></div><p>Observe o cenário e selecione os pontos numerados. Use “Onde está o risco?” para abrir o painel e expanda a explicação do ponto selecionado. “Revisado” registra apenas que você leu o ponto; não é uma nota nem uma aprovação de segurança.</p><h3>Vídeo dos riscos</h3><p>Use o botão “Vídeo dos riscos” no cabeçalho para assistir ao percurso automático pelas 19 situações. Espaço ou P: pausar e reproduzir. ← / →: mudar de situação. Esc: sair. A voz é opcional e depende de uma voz em português no dispositivo. “Gravar vídeo” gera um WebM com textos na imagem, sem áudio. Ao sair, as posições anteriores da frota são restauradas; uma condução anterior fica pausada.</p><div class="help-grid"><div><b>Vistoria</b><p>Arrastar · girar a câmera<br>Shift + arrastar ou botão direito · deslocamento linear<br>Arrastar: linear / tecla M · mover a visão com um dedo ou mouse<br>W A S D · percorrer o cenário sem girar<br>R / V · subir / descer a câmera<br>Dois dedos · deslocar e aproximar<br>Roda do mouse · aproximar<br>← / → · situação anterior / próxima<br>Ocultar painel · ampliar a área de demonstração<br>Ocultar números / Mostrar números · ativar ou desativar as bolas numeradas<br>N · alternar a exibição dos números<br>⛶ · tela cheia sem barras de comandos ou indicadores inferiores<br>Esc ou ⛶ · sair da tela cheia e restaurar as informações</p></div><div><b>Condução opcional</b><p>W / S ou ↑ / ↓ · frente / ré<br>A / D · direção<br>L · manter / liberar condução em linha reta<br>Espaço · freio<br>R / V · subir / baixar garfos<br>Q / E · inclinação<br>Z / X · deslocamento lateral<br>C · externa / cabine / aérea<br>T · trocar empilhadeira<br>P · pausar · F · examinar risco próximo</p></div></div><label>Qualidade gráfica <select id="quality"><option value="high">Realista · sombras de contato e alta definição</option><option value="medium">Equilibrada · sombras e antisserrilhado</option><option value="low">Leve · sem sombras</option></select></label><p><button id="sound">Som: desligado</button></p><div class="sources"><b>Horário e iluminação</b><p>O relógio no cabeçalho mostra o horário em formato de 24 horas e o período do dia. No modo automático, usa o relógio do dispositivo convertido para America/Sao_Paulo. Clique no relógio para digitar de 00:00 a 23:59, arrastar a barra ou simular dia e noite. “Hora de São Paulo” restaura o horário atual. A simulação manual não altera a data nem o relógio do computador.</p><p>A iluminação solar e os horários de nascer e pôr do sol são estimados para a data, em um ponto de referência da cidade de São Paulo. O norte do cenário, a lua e a iluminação artificial são ilustrativos: não representam orientação medida, meteorologia ao vivo ou um laudo luminotécnico. Durante a noite, as luminárias e os faróis tornam-se mais intensos.</p><b>Fidelidade e interpretação</b><p>Iluminação automática: faróis, lanternas e luzes laterais dos caminhões; LEDs dianteiros e traseiros das onze empilhadeiras. O redzone azul acompanha as laterais e a traseira no piso, inclusive em curvas e rampas. As intensidades e distâncias luminosas são ilustrativas e não constituem dimensionamento técnico. Controles no relógio, em “Ciclo do dia”.</p><p>Logos Sesé menores e centralizadas nas laterais e na traseira das 11 empilhadeiras, com margens dentro das áreas de aplicação.</p><p>Revisão 13: as 11 empilhadeiras foram reconstruídas a partir das fotos da RX20-16 de carroceria arredondada: contrapeso compacto, laterais prateadas, cabine arqueada, rodas dianteiras menores e pneus traseiros duplos centrais. As proporções seguem a ficha técnica dessa geração; os detalhes visuais são uma reconstrução das referências. Identidade Sesé aplicada nas laterais e na traseira.</p><p>Revisão 12: fachadas inspiradas na foto do galpão, com chapas verticais escuras, pilares em I, faixas superiores translúcidas, contraventamentos, dutos e luminárias. O acabamento foi adaptado às paredes existentes; as posições das situações de risco foram mantidas.</p><p>Revisão 11: identidade Sesé, materiais com relevo, concreto com juntas e desgaste discreto, acabamento industrial, sombras de maior definição e iluminação com resposta diferente para madeira, borracha, vidro e metal. A disposição dos riscos e os comandos da revisão anterior foram mantidos. Em computadores mais lentos, selecione Equilibrada ou Leve.</p><p>As fotografias e o vídeo enviados orientaram a disposição dos objetos. As condições perigosas visíveis foram mantidas, incluindo pessoas, pilhas, derramamentos, rampas e docas. Todas as empilhadeiras, inclusive as que tinham outro formato na maquete, foram representadas pelo modelo RX20-16, agora identificado com a logo Sesé fornecida.</p><p>Os três caminhões seguem a referência do Scania azul Sesé, com cavalo mecânico e carreta de lona. O piso da armazenagem e o pátio inferior foram ampliados, com mais espaço livre para circular. As cadeiras e os bancos externos foram retirados. As situações junto às carretas acompanham as novas posições. As onze empilhadeiras possuem operadores sentados com o mesmo uniforme amarelo e azul, faixas refletivas, mãos junto aos comandos e pés na cabine. Os personagens mantêm rosto texturizado, roupas contínuas e contatos revisados com caixas, pallets e estruturas. Os personagens usam proporções humanas e uniformes amarelos e azuis com faixas refletivas, conforme a foto de referência adicional. A mancha azul do corredor foi identificada pelo usuário como óleo e aparece em marrom-escuro no 3D. No ponto 17, o esmagamento sob o pallet foi reconstituído conforme o relato adicional do responsável, com sangue nas roupas e no piso. A galeria e as fotografias foram retiradas desta interface para ampliar a demonstração.</p><p>Sem planta ou medidas, o 3D é uma reconstrução proporcional, não uma cópia métrica. Os textos distinguem o que é visível das consequências possíveis; não atestam peso, capacidade, substância, infração normativa ou causa de acidente não demonstrados pelas imagens.</p><p>Orientação geral para discussão: <a href="https://www.hse.gov.uk/workplacetransport/information/loading.htm" target="_blank" rel="noopener">HSE · operações de carga e descarga</a> e <a href="https://www.hse.gov.uk/workplacetransport/about.htm" target="_blank" rel="noopener">HSE · circulação no local de trabalho</a>. O simulador não substitui análise técnica ou treinamento supervisionado. As apostilas MTM foram mantidas como contexto; não há cálculo MTM neste exercício.</p></div><a class="download" href="simulador_sese_galpao.html" download="simulador_sese_luzes_noturnas_redzone_azul.html">Baixar simulador completo em HTML</a></dialog>
 <section id="timePanel" class="time-panel" aria-label="Horário e iluminação do cenário" hidden>
  <div class="time-panel-head"><div><span class="time-eyebrow">AMBIENTE 3D</span><h2>Ciclo do dia</h2></div><button id="closeTimePanel" aria-label="Fechar ajustes de horário">✕</button></div>
- <p class="time-description">O horário muda o céu, as sombras e a iluminação.</p>
+ <p class="time-description">O horário muda o céu, as sombras e a iluminação. Ao anoitecer, acendem os faróis dos caminhões e os LEDs de todas as empilhadeiras.</p>
  <div class="time-segments" role="group" aria-label="Origem do horário"><button id="liveTime" class="selected" aria-pressed="true">Hora de São Paulo</button><button id="manualTime" aria-pressed="false">Ajuste manual</button></div>
  <div class="time-readout"><div><span id="panelPeriod">—</span><strong id="panelTime">--:--</strong></div><label for="timeInput">Horário · 24 h<input id="timeInput" type="text" inputmode="numeric" pattern="(?:[01][0-9]|2[0-3]):[0-5][0-9]" maxlength="5" placeholder="HH:MM" autocomplete="off" spellcheck="false" value="12:00" aria-describedby="timeHint"></label></div>
  <label class="sr-only" for="daySlider">Horário do cenário, de 00:00 a 23:59</label>
@@ -137,6 +158,7 @@ body.tour-active{--tour-side:354px;--tour-bottom:144px;background:#071321}
  <div class="time-ticks" aria-hidden="true"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>23:59</span></div>
  <div class="time-presets" role="group" aria-label="Simular um período"><button data-scene-time="360"><span aria-hidden="true">◒</span>06:00<small>Amanhecer</small></button><button data-scene-time="720"><span aria-hidden="true">☀</span>12:00<small>Dia</small></button><button data-scene-time="1080"><span aria-hidden="true">◓</span>18:00<small>Entardecer</small></button><button data-scene-time="1320"><span aria-hidden="true">☾</span>22:00<small>Noite</small></button></div>
  <p id="timeHint" class="time-hint">Arraste a barra ou digite um horário para simular outro período.</p>
+ <div class="vehicle-light-settings"><span class="vehicle-light-label">ILUMINAÇÃO DOS VEÍCULOS · AUTOMÁTICA</span><strong id="vehicleLightStatus" role="status">Sincronizando com o horário do cenário</strong><button id="blueRedzone" class="selected" aria-pressed="true" title="Ativar ou desativar a projeção azul nas laterais e na traseira de todas as empilhadeiras">Redzone azul: ligado</button><p>Projeção nas laterais e na traseira, acompanhando curvas e rampas. A linha azul é uma sinalização visual, não uma barreira física.</p></div>
  <div class="time-sun"><span>Nascer do sol <b id="sunriseTime">--:--</b></span><span>Pôr do sol <b id="sunsetTime">--:--</b></span></div>
  <p class="time-note"><span id="spDate">São Paulo · SP</span><br>Relógio do dispositivo convertido para America/Sao_Paulo. Luz solar estimada para a data; não utiliza meteorologia em tempo real.</p>
 </section>
@@ -473,6 +495,167 @@ class SaoPauloDayCycle {
 
 const sceneClock=new SaoPauloDayCycle();
 
+/* Vehicle lighting is visual only. It never creates a collider or a safety interlock.
+ * Ground ribbons are rebuilt in world space when a vehicle moves, and sampled
+ * against the existing ramp and dock heights. They are not meshes attached at
+ * a fixed height to the chassis, so the projection stays on the floor.
+ */
+class VehicleLightEffects {
+ constructor(renderer, fleet, trucks, floorHeight, layout) {
+  this.renderer=renderer;this.fleet=fleet;this.trucks=trucks;this.floorHeight=floorHeight;this.layout=layout;
+  this.redzoneEnabled=true;this.lastKey='';this.ground=[];this.sources=[];this.statusKey='';this.geometryCache=new Map();
+  const gl=this.gl=renderer.gl;
+  this.program=renderer.programFrom(`#version 300 es
+precision highp float;
+layout(location=0) in vec3 position;
+layout(location=1) in vec2 uv;
+layout(location=2) in vec3 color;
+layout(location=3) in vec2 effect;
+uniform mat4 viewProjection;
+out vec2 texcoord;out vec3 tint;out vec2 kindGain;
+void main(){texcoord=uv;tint=color;kindGain=effect;gl_Position=viewProjection*vec4(position,1.);}`,`#version 300 es
+precision highp float;
+in vec2 texcoord;in vec3 tint;in vec2 kindGain;
+uniform float nightGain,redzoneOn;
+out vec4 frag;
+void main(){
+ float kind=kindGain.x,gain=kindGain.y,a=0.;vec3 c=tint;
+ if(kind<.5){
+  // Saturated narrow blue core and a soft optical halo, including in daylight.
+  float d=abs(texcoord.x),aa=max(fwidth(texcoord.x)*.75,.015);
+  float core=1.-smoothstep(.105-aa,.19+aa,d);
+  float halo=exp(-d*d*7.0)*(1.-smoothstep(.74,1.,d));
+  float end=smoothstep(0.,.022,texcoord.y)*(1.-smoothstep(.978,1.,texcoord.y));
+  a=redzoneOn*end*clamp(core*.96+halo*mix(.20,.40,nightGain),0.,.98);
+  c=mix(vec3(.015,.12,.95),vec3(.12,.56,1.),core*.82);
+ }else if(kind<1.5){
+  float edge=pow(max(0.,1.-texcoord.x*texcoord.x),2.2);
+  float longitudinal=smoothstep(0.,.085,texcoord.y)*pow(max(0.,1.-texcoord.y),1.65);
+  a=nightGain*gain*edge*longitudinal;
+ }else{
+  float d=length(texcoord);
+  float halo=exp(-d*d*7.5)*(1.-smoothstep(.55,1.,d));
+  float core=exp(-d*d*72.);
+  a=(kind>2.5?1.:nightGain)*gain*(halo*.54+core*.55);
+ }
+ if(a<.001)discard;
+ frag=kind<.5?vec4(c,a):vec4(c*a,a);
+}`);
+  this.groundVao=gl.createVertexArray();this.groundBuffer=gl.createBuffer();this.initBuffer(this.groundVao,this.groundBuffer);
+  this.glowVao=gl.createVertexArray();this.glowBuffer=gl.createBuffer();this.initBuffer(this.glowVao,this.glowBuffer);
+  this.bindUI();
+ }
+ initBuffer(vao,buffer){const gl=this.gl;gl.bindVertexArray(vao);gl.bindBuffer(gl.ARRAY_BUFFER,buffer);for(const [i,size,off] of [[0,3,0],[1,2,12],[2,3,20],[3,2,32]]){gl.enableVertexAttribArray(i);gl.vertexAttribPointer(i,size,gl.FLOAT,false,40,off)}gl.bindVertexArray(null)}
+ bindUI(){const b=document.getElementById('blueRedzone');if(b)b.onclick=()=>this.setRedzone(!this.redzoneEnabled)}
+ setRedzone(on){this.redzoneEnabled=Boolean(on);const b=document.getElementById('blueRedzone');if(b){b.setAttribute('aria-pressed',String(this.redzoneEnabled));b.classList.toggle('selected',this.redzoneEnabled);b.textContent='Redzone azul: '+(this.redzoneEnabled?'ligado':'desligado')}if(this.renderer.blueProjectorMaterial)this.renderer.blueProjectorMaterial.emit=this.redzoneEnabled?5.5:0;return this.redzoneEnabled}
+ direction(parent,local){const m=parent.world;return V.norm([m[0]*local[0]+m[4]*local[1]+m[8]*local[2],m[1]*local[0]+m[5]*local[1]+m[9]*local[2],m[2]*local[0]+m[6]*local[1]+m[10]*local[2]])}
+ inside(x,z){const b=z<=9?this.layout.upperBounds:this.layout.apronBounds;return x>=b[0]&&x<=b[1]&&z>=b[2]&&z<=b[3]}
+ groundPoint(parent,x,z){const p=M.point(parent.world,[x,0,z]);return[p[0],this.floorHeight(p[0],p[2])+.039,p[2]]}
+ vertex(out,p,uv,color,kind,gain=1){out.push(...p,...uv,...color,kind,gain)}
+ triangle(out,verts,color,kind,gain){
+  const points=verts.map(v=>v[0]);
+  if(points.some(p=>!this.inside(p[0],p[2])))return;
+  // Never stretch a luminous triangle vertically across an abrupt dock edge.
+  if(Math.max(...points.map(p=>p[1]))-Math.min(...points.map(p=>p[1]))>.16)return;
+  for(const [p,uv] of verts)this.vertex(out,p,uv,color,kind,gain);
+ }
+ quad(out,points,uvs,color,kind,gain=1){this.triangle(out,[[points[0],uvs[0]],[points[1],uvs[1]],[points[2],uvs[2]]],color,kind,gain);this.triangle(out,[[points[0],uvs[0]],[points[2],uvs[2]],[points[3],uvs[3]]],color,kind,gain)}
+ makeZone(out,parent){
+  const path=[],side=1.28,back=1.82,radius=.39,start=-1.30;
+  const line=(a,b,n)=>{for(let i=0;i<n;i++){const t=i/n;path.push([a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t])}};
+  line([-side,start],[-side,back-radius],20);
+  for(let i=0;i<9;i++){const a=Math.PI-i/9*Math.PI/2;path.push([-side+radius+radius*Math.cos(a),back-radius+radius*Math.sin(a)])}
+  line([-side+radius,back],[side-radius,back],16);
+  for(let i=0;i<9;i++){const a=Math.PI/2-i/9*Math.PI/2;path.push([side-radius+radius*Math.cos(a),back-radius+radius*Math.sin(a)])}
+  line([side,back-radius],[side,start],20);path.push([side,start]);
+  let lengths=[0];for(let i=1;i<path.length;i++)lengths.push(lengths[i-1]+Math.hypot(path[i][0]-path[i-1][0],path[i][1]-path[i-1][1]));
+  const half=.17,edges=path.map((p,i)=>{const before=path[Math.max(0,i-1)],after=path[Math.min(path.length-1,i+1)],dx=after[0]-before[0],dz=after[1]-before[1],d=Math.hypot(dx,dz)||1;return [this.groundPoint(parent,p[0]-dz/d*half,p[1]+dx/d*half),this.groundPoint(parent,p[0]+dz/d*half,p[1]-dx/d*half)]});
+  for(let i=0;i<path.length-1;i++){const v0=lengths[i]/lengths.at(-1),v1=lengths[i+1]/lengths.at(-1);this.quad(out,[edges[i][0],edges[i][1],edges[i+1][1],edges[i+1][0]],[[-1,v0],[1,v0],[1,v1],[-1,v1]],[.015,.23,1.],0,1)}
+ }
+ makeBeam(out,parent,{x=0,z=-.9,length=9,startWidth=.22,endWidth=1.8,forward=-1,gain=.35,color=[.73,.85,1.]}){
+  const rows=Math.ceil(length/.30),cols=6;
+  for(let i=0;i<rows;i++){const v0=i/rows,v1=(i+1)/rows;for(let j=0;j<cols;j++){const u0=j/cols*2-1,u1=(j+1)/cols*2-1;
+   const p=(u,v)=>this.groundPoint(parent,x+u*(startWidth+(endWidth-startWidth)*v),z+forward*(.18+length*v));
+   this.quad(out,[p(u0,v0),p(u1,v0),p(u1,v1),p(u0,v1)],[[u0,v0],[u1,v0],[u1,v1],[u0,v1]],color,1,gain);
+  }}
+ }
+ rebuild(){
+  const key=[...this.fleet.map(s=>[s.x,s.z,s.yaw,s.baseY,s.group.r[0]].map(v=>(v||0).toFixed(4)).join(',')),...this.trucks.map(t=>[...t.p,...t.r].join(','))].join('|');
+  if(key===this.lastKey)return;this.lastKey=key;
+  const zones=[],beams=[];
+  const cached=(parent,isTruck)=>{
+   const pose=Array.from(parent.world).map(v=>v.toFixed(5)).join(',');let data=this.geometryCache.get(parent);
+   if(!data||data.pose!==pose){
+    data={pose,zones:[],beams:[]};
+    if(isTruck){for(const side of [-1,1]){
+     this.makeBeam(data.beams,parent,{x:side*.99,z:-8.49,length:16,endWidth:2.8,gain:.24,color:[.86,.93,1.]});
+     this.makeBeam(data.beams,parent,{x:side*.91,z:8.48,length:2.0,startWidth:.22,endWidth:.85,forward:1,gain:.11,color:[1.,.06,.012]});
+    }}else{
+     this.makeZone(data.zones,parent);
+     for(const side of [-1,1])this.makeBeam(data.beams,parent,{x:side*.462,z:-.90,length:9,endWidth:1.60,gain:.18});
+     this.makeBeam(data.beams,parent,{z:.72,length:4.2,startWidth:.32,endWidth:1.3,forward:1,gain:.16});
+    }
+    this.geometryCache.set(parent,data);
+   }
+   for(const v of data.zones)zones.push(v);for(const v of data.beams)beams.push(v);
+  };
+  for(const s of this.fleet)cached(s.group,false);for(const t of this.trucks)cached(t,true);
+  this.zoneVertices=zones.length/10;this.beamVertices=beams.length/10;
+  const data=new Float32Array(zones.length+beams.length);data.set(zones);data.set(beams,zones.length);
+  const gl=this.gl;gl.bindBuffer(gl.ARRAY_BUFFER,this.groundBuffer);gl.bufferData(gl.ARRAY_BUFFER,data,gl.DYNAMIC_DRAW);
+  this.ground=data;
+ }
+ localLights(){
+  const out=[];
+  const add=(parent,position,dir,power,range,cone,color=[.85,.93,1.])=>out.push({position:M.point(parent.world,position),direction:this.direction(parent,dir),power,range,cone,color,vehicle:true});
+  for(const s of this.fleet){add(s.group,[0,1.86,-.87],[0,-.34,-1],80,17,.73);if(s===this.renderer.activeLightVehicle?.())add(s.group,[0,1.88,.66],[0,-.48,1],26,8,.55)}
+  for(const t of this.trucks)add(t,[0,1.02,-8.52],[0,-.14,-1],115,29,.86,[.90,.95,1.]);
+  return out;
+ }
+ glowGeometry(eye,target,night){
+  const out=[],right=V.norm(V.cross(V.norm(V.sub(target,eye)),[0,1,0])),up=V.norm(V.cross(right,V.norm(V.sub(target,eye))));
+  const add=(parent,local,normal,radius,color,gain,blue=false)=>{
+   if(!blue&&night<.005)return;if(blue&&!this.redzoneEnabled)return;
+   const n=this.direction(parent,normal),pos=V.add(M.point(parent.world,local),V.mul(n,.012)),toward=V.norm(V.sub(eye,pos));let facing=Math.max(0,V.dot(n,toward));facing=Math.min(1,facing*2.8);if(facing<.025)return;
+   const corners=[[-1,-1],[1,-1],[1,1],[-1,1]],points=corners.map(([x,y])=>V.add(pos,V.add(V.mul(right,x*radius),V.mul(up,y*radius))));
+   for(const i of [0,1,2,0,2,3])this.vertex(out,points[i],corners[i],color,blue?3:2,gain*facing);
+  };
+  for(const s of this.fleet){for(const side of [-1,1]){
+   add(s.group,[side*.462,1.861,-.765],[0,0,-1],.19,[.75,.89,1.],.88);
+   add(s.group,[side*.36,1.885,.547],[0,0,1],.15,[.78,.90,1.],.68);
+   add(s.group,[side*.211,1.06,.699],[0,0,1],.105,[1.,.07,.015],.50);
+   add(s.group,[side*.531,1.84,.06],[side,-.3,0],.105,[.012,.22,1.],.80,true);
+  }add(s.group,[0,1.844,.598],[0,-.35,1],.115,[.012,.22,1.],.80,true)}
+  for(const t of this.trucks)for(const side of [-1,1]){
+   add(t,[side*.99,.987,-8.43],[0,0,-1],.38,[.88,.95,1.],1.0);
+   add(t,[side*.90,.55,-8.411],[0,0,-1],.18,[.87,.94,1.],.7);
+   add(t,[side*.90,3.445,-8.01],[0,0,-1],.15,[.82,.92,1.],.54);
+   add(t,[side*.91,1.07,8.42],[0,0,1],.30,[1.,.055,.012],.66);
+   for(const z of [-3,-.3,2.4,7.98])add(t,[side*1.315,1.24,z],[side,0,0],.12,[1.,.34,.016],.64);
+  }
+  return new Float32Array(out);
+ }
+ render(eye,target,env,w,h){
+  this.rebuild();const gl=this.gl,{p,u}=this.program,night=env.nightStrength;
+  const status=document.getElementById('vehicleLightStatus'),key=night>.85?'on':night<.05?'off':'twilight';
+  if(status&&this.statusKey!==key){this.statusKey=key;status.textContent=key==='on'?'Acesos · caminhões e empilhadeiras':key==='off'?'Apagados · período diurno':'Ajustando ao amanhecer / anoitecer';status.dataset.state=key}
+  gl.useProgram(p);gl.uniformMatrix4fv(u.viewProjection,false,M.mul(M.perspective(Math.PI/3.25,w/h,.06,140),M.look(eye,target)));
+  gl.uniform1f(u.nightGain,night);gl.uniform1f(u.redzoneOn,this.redzoneEnabled?1:0);
+  gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.depthMask(false);gl.enable(gl.BLEND);gl.blendEquation(gl.FUNC_ADD);
+  gl.bindVertexArray(this.groundVao);
+  // Soft light footprints do not write depth. Objects in front naturally occlude them.
+  gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_COLOR);
+  if(night>.005)gl.drawArrays(gl.TRIANGLES,this.zoneVertices,this.beamVertices);
+  gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
+  if(this.redzoneEnabled)gl.drawArrays(gl.TRIANGLES,0,this.zoneVertices);
+  const glows=this.glowGeometry(eye,target,night);
+  if(glows.length){gl.bindVertexArray(this.glowVao);gl.bindBuffer(gl.ARRAY_BUFFER,this.glowBuffer);gl.bufferData(gl.ARRAY_BUFFER,glows,gl.DYNAMIC_DRAW);gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_COLOR);gl.drawArrays(gl.TRIANGLES,0,glows.length/10)}
+  gl.disable(gl.BLEND);gl.depthMask(true);gl.depthFunc(gl.LESS);
+  this.state={nightStrength:night,headlightsOn:night>.05,redzoneEnabled:this.redzoneEnabled,forklifts:this.fleet.length,trucks:this.trucks.length,zoneVertices:this.zoneVertices,beamVertices:this.beamVertices};
+ }
+}
+
+
 class Renderer{
 constructor(canvas){this.canvas=canvas;let gl=this.gl=canvas.getContext('webgl2',{antialias:true,alpha:false,powerPreference:'high-performance'});if(!gl)throw Error('Este navegador não disponibilizou WebGL 2. Ative a aceleração de hardware ou use Chrome/Edge atualizado.');this.meshes=[];this.geometries=new Map();this.textures=new Map();this.program=this.programFrom(VS,FS);this.depthProgram=this.programFrom(DVS,DFS);this.skyProgram=this.programFrom(SKYVS,SKYFS);this.skyVao=gl.createVertexArray();this.aniso=gl.getExtension("EXT_texture_filter_anisotropic");this.shadowSize=Math.min(4096,gl.getParameter(gl.MAX_TEXTURE_SIZE));gl.enable(gl.DEPTH_TEST);this.shadow=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,this.shadow);gl.texImage2D(gl.TEXTURE_2D,0,gl.DEPTH_COMPONENT24,this.shadowSize,this.shadowSize,0,gl.DEPTH_COMPONENT,gl.UNSIGNED_INT,null);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);this.fbo=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,this.fbo);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.DEPTH_ATTACHMENT,gl.TEXTURE_2D,this.shadow,0);gl.drawBuffers([gl.NONE]);gl.readBuffer(gl.NONE);if(gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)throw Error('Não foi possível inicializar as sombras 3D.');gl.bindFramebuffer(gl.FRAMEBUFFER,null);this.light=M.mul(M.ortho(-50,50,-50,50,.1,135),M.look([-23,56,25],[5,0,4]));this.quality=window.innerWidth<700?'medium':'high';this.frame=0;this.dummy=this.textureCanvas(1,1,c=>{c.fillStyle='#fff';c.fillRect(0,0,1,1)});}
 programFrom(v,f){let gl=this.gl,p=gl.createProgram();for(let [type,src]of [[gl.VERTEX_SHADER,v],[gl.FRAGMENT_SHADER,f]]){let s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));gl.attachShader(p,s)}gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(p));let uniforms={};for(let i=0;i<gl.getProgramParameter(p,gl.ACTIVE_UNIFORMS);i++){let x=gl.getActiveUniform(p,i);uniforms[x.name]=gl.getUniformLocation(p,x.name)}return{p,u:uniforms}}
@@ -539,9 +722,15 @@ render(root,eye,target,dt=.016){
  // Physical positions follow the model's fixtures. Only the most influential lights are uploaded.
  const extras=this.lightProvider?this.lightProvider():[],limit=low?8:high?20:12;
  const fixtures=(this.staticLights||[]).map(l=>({...l,worldPosition:l.parent?M.point(l.parent.world,l.position):l.position}));
- for(const l of fixtures){const d=V.sub(l.worldPosition,target);l.score=l.power/(V.dot(d,d)+70)}
- fixtures.sort((a,b)=>b.score-a.score);
- const lights=env.nightStrength>.015?[...extras,...fixtures.slice(0,Math.max(0,limit-extras.length))]:[];
+ const score=l=>{const p=l.worldPosition||l.position,d=V.sub(p,target),e=V.sub(p,eye);return l.power/(V.dot(d,d)+35)+l.power*.25/(V.dot(e,e)+20)};
+ extras.sort((a,b)=>score(b)-score(a));fixtures.sort((a,b)=>score(b)-score(a));
+ const vehicleSlots=Math.min(extras.length,low?4:high?10:6);
+ const candidates=[...extras.slice(0,vehicleSlots),...fixtures.slice(0,limit-vehicleSlots)];
+ if(candidates.length<limit)candidates.push(...extras.slice(vehicleSlots,vehicleSlots+limit-candidates.length));
+ // Lenses, light footprints and blue redzones stay on for ALL vehicles, even
+ // when distant point sources are culled to preserve the graphics frame rate.
+ const lights=env.nightStrength>.015?candidates.slice(0,limit):[];
+ this.activePointLights=lights;
  const positions=new Float32Array(80),colors=new Float32Array(80),directions=new Float32Array(80);
  for(let i=0;i<lights.length;i++){const l=lights[i],pos=l.worldPosition||l.position,nightGain=.04+.96*env.nightStrength;positions.set([...pos,l.power*nightGain],i*4);colors.set([...(l.color||[.87,.94,1.]),l.range||23],i*4);directions.set([...(l.direction||[0,-1,0]),l.cone??.05],i*4)}
  gl.uniform1i(u.pointCount,lights.length);gl.uniform4fv(u['pointPos[0]'],positions);gl.uniform4fv(u['pointColor[0]'],colors);gl.uniform4fv(u['pointDir[0]'],directions);
@@ -551,12 +740,13 @@ render(root,eye,target,dt=.016){
   const m=n.mat;gl.uniformMatrix4fv(u.model,false,n.world);if(n._normalWorld!==n.world){n._normalWorld=n.world;n._normalCache=this.normalMatrix(n.world)}gl.uniformMatrix3fv(u.normalMatrix,false,n._normalCache);
   if(previousMat!==m){
    previousMat=m;gl.uniform3fv(u.color,m.color);gl.uniform1f(u.roughness,m.rough??.6);gl.uniform1f(u.metallic,m.metal??0);
-   gl.uniform1f(u.clearcoat,m.coat??0);gl.uniform1f(u.emission,(m.emit??0)*(m.nightLight?.035+.965*env.nightStrength:1));
+   gl.uniform1f(u.clearcoat,m.coat??0);gl.uniform1f(u.emission,(m.emit??0)*(m.vehicleLamp?env.nightStrength:m.nightLight?.035+.965*env.nightStrength:1));
    gl.uniform1f(u.wetness,m.wet??0);gl.uniform1f(u.hasTexture,m.texture?1:0);gl.uniform1f(u.surfaceKind,m.surface??0);gl.uniform1f(u.hasDetail,m.detail&&!low?1:0);gl.uniform1f(u.bumpStrength,m.bump??.3);
    gl.activeTexture(gl.TEXTURE2);gl.bindTexture(gl.TEXTURE_2D,m.detail||this.dummy);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,m.texture||this.dummy);
   }
   gl.bindVertexArray(n.geo.vao);gl.drawArrays(gl.TRIANGLES,0,n.geo.count);
  }
+ if(this.vehicleEffects)this.vehicleEffects.render(eye,target,env,w,h);
  if(post){
   const t=this.postTargets;
   if(t.msFbo){gl.bindFramebuffer(gl.READ_FRAMEBUFFER,t.msFbo);gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER,t.fbo);gl.blitFramebuffer(0,0,w,h,0,0,w,h,gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT,gl.NEAREST)}
@@ -583,6 +773,7 @@ GEO.rearHull=function(layers){let g=new Geometry(),N=32,rings=layers.map(([y,w,f
    Dimensions are scene proportions, not a manufacturer CAD model. Front = -Z. */
 window.makeScaniaModel=function({renderer,root,mesh,box,cylinder,sphere,tube,label,pallet,crate,person,mats,truckImage}){
 const PI=Math.PI,paint=material('#1262bd',.25,.32),blueTrim=material('#10509c',.31,.2),tarp=material('#174e85',.86),silver=material('#bfc6cb',.28,.72),alloy=material('#9faeb8',.20,.85),rubber=material('#151b20',.94),grille=material('#151e26',.73),grilleWire=material('#35444e',.73),glass=material('#1c303b',.14,.50),cream=material('#d7d6cd',.84),lamp=material('#d4e3ea',.19,.22),amber=material('#e29a2d',.28),red=material('#b82926',.3);
+Object.assign(lamp,{emit:8.0,nightLight:true,vehicleLamp:true});Object.assign(amber,{emit:4.5,nightLight:true,vehicleLamp:true});Object.assign(red,{emit:6.0,nightLight:true,vehicleLamp:true});
 const curtainPhoto={...material('#ffffff',.84),texture:renderer.textureCanvas(800,533,c=>c.drawImage(truckImage,0,0,800,533))};
 const tyre=GEO.torus(.385,.12,48,14),rim=GEO.cylinder(48);
 function smooth(g){let sums=new Map();for(let i=0;i<g.data.length;i+=8){let key=g.data.slice(i,i+3).map(v=>v.toFixed(5)).join(',');sums.set(key,V.add(sums.get(key)||[0,0,0],g.data.slice(i+3,i+6)))}for(let i=0;i<g.data.length;i+=8){let key=g.data.slice(i,i+3).map(v=>v.toFixed(5)).join(',');g.data.splice(i+3,3,...V.norm(sums.get(key)))}return g}
@@ -935,7 +1126,7 @@ for(const [x,z] of [[-16,18],[-16,34],[32,20],[32,36]]){
 }
 // Existing facade lights also illuminate their surrounding surfaces.
 for(const [parent,width] of [[backFacade,48.5],[rightFacade,84]])for(let x=-width/2+3;x<width/2;x+=12)registerLamp(parent,[x,9.40,2.10],115,19,[.81,.90,1.]);
-Object.assign(warehouseLamp,{emit:5.0,nightLight:true});Object.assign(mats.light,{emit:5.8,nightLight:true});
+Object.assign(warehouseLamp,{emit:5.0,nightLight:true});Object.assign(mats.light,{emit:7.5,nightLight:true,vehicleLamp:true});
 
 
 // Low-contrast tire traces and dust are surface finish, not additional hazards.
@@ -970,6 +1161,9 @@ function rxRear(layers,cutout=false){let g=new Geometry(),N=64,rows=rxCurve(laye
 function rxWheel(parent,p,r,width){let g=new Node(parent);g.p=p;g.rollingRadius=r;g.wheelWidth=width;let tyre=rxGeo('tyre'+r,()=>{let geo=new Geometry(),section=[[-width/2,r*.67],[-width/2,r*.82],[-width*.46,r*.94],[-width*.34,r],[width*.34,r],[width*.46,r*.94],[width/2,r*.82],[width/2,r*.67]],N=96;for(let i=0;i<section.length-1;i++)for(let j=0;j<N;j++){let point=(si,k)=>{let [x,rad]=section[si],a=k*2*PI/N;return[x,rad*Math.cos(a),rad*Math.sin(a)]};geo.quad(point(i,j),point(i,j+1),point(i+1,j+1),point(i+1,j))}return rxSmooth(geo)});mesh(tyre,rxTyre,g);cylinder(rxInset,[0,0,0],r*.71,width*.96,g,[0,0,PI/2]);for(let sign of [-1,1]){cylinder(rxRim,[sign*(width/2+.001),0,0],r*.55,.012,g,[0,0,PI/2]);mesh(rxGeo('rimring'+r,()=>GEO.torus(r*.52,.009,40,8)),rxRim,g,[sign*(width/2+.007),0,0],[1,1,1],[0,0,PI/2]);cylinder(rxInset,[sign*(width/2+.01),0,0],r*.27,.019,g,[0,0,PI/2]);for(let i=0;i<5;i++){let a=i*2*PI/5;cylinder(mats.chrome,[sign*(width/2+.013),Math.cos(a)*r*.39,Math.sin(a)*r*.39],.008,.012,g,[0,0,PI/2])}}
 // Shallow moulded tread ribs, contained inside the nominal rolling diameter.
 for(let i=0;i<36;i++){let a=i*2*PI/36;box(rxInset,[0,Math.cos(a)*(r-.002),Math.sin(a)*(r-.002)],[width*.60,.005,.008],g,[a,0,.12])}return g}
+const forkliftTailLamp={...material('#f22b18',.21,.05),emit:6.0,nightLight:true,vehicleLamp:true};
+const blueProjectorLamp={...material('#166dff',.20,.02),emit:5.5};
+renderer.blueProjectorMaterial=blueProjectorLamp;
 function forklift(x,z,yaw,id){let g=new Node(root);g.p=[x,0,z];g.r[1]=yaw;g.vehicleId=id;g.modelSpec=rx20Spec;let parts={};
 // Compact battery chassis and two separate side panels leave the front wheel wells open.
 box(rxInset,[0,.26,-.20],[.74,.26,1.38],g);
@@ -994,7 +1188,7 @@ mesh(rxGeo('rear-lid',()=>rxRear([[1.075,.466,.424,.690],[1.135,.451,.397,.667],
 let seam=[];for(let i=0;i<=44;i++){let a=i*PI/44;seam.push([.534*Math.cos(a),.505,.31+.425*Math.sin(a)])}tube(seam,.005,rxOrange,g);
 box(rxPaint,[0,.953,.730],[.252,.084,.018],g);label('SESÉ',[0,.953,.741],.22,.064,g,[0,0,0]);
 label(id,[0,.543,.741],.135,.060,g,[0,0,0],'#ef812b','#232a2f');
-for(let side of [-1,1]){box(rxInset,[side*.211,1.057,.668],[.19,.069,.033],g,[0,side*.16,0]);box(mats.red,[side*.211,1.060,.686],[.145,.046,.01],g,[0,side*.16,0]);box(mats.white,[side*.285,1.060,.67],[.021,.044,.016],g,[0,side*.16,0])}
+for(let side of [-1,1]){box(rxInset,[side*.211,1.057,.668],[.19,.069,.033],g,[0,side*.16,0]);box(forkliftTailLamp,[side*.211,1.060,.686],[.145,.046,.01],g,[0,side*.16,0]);box(mats.white,[side*.285,1.060,.67],[.021,.044,.016],g,[0,side*.16,0])}
 box(rxInset,[0,.687,.733],[.068,.035,.021],g);cylinder(rxForkSteel,[0,.45,.67],.027,.11,g);box(rxForkSteel,[0,.406,.705],[.15,.021,.10],g);
 // Original RX20-16: front 18x7-8 tyres, rear 15x4.5-8 close-coupled pair.
 parts.front=[rxWheel(g,[-.466,.2286,-.800],.2286,.166),rxWheel(g,[.466,.2286,-.800],.2286,.166)];parts.rear=new Node(g);parts.rear.p=[0,.1905,.541];parts.rearWheels=[rxWheel(parts.rear,[-.084,0,0],.1905,.114),rxWheel(parts.rear,[.084,0,0],.1905,.114)];cylinder(rxInset,[0,.27,0],.062,.25,parts.rear);box(rxInset,[0,.07,0],[.26,.065,.11],parts.rear);
@@ -1013,6 +1207,15 @@ for(let side of [-1,1]){
  box(rxInset,[side*.462,1.861,-.704],[.10,.069,.075],g);box(mats.light,[side*.462,1.861,-.744],[.071,.040,.01],g);
  tube([[side*.456,1.929,.356],[side*.538,1.977,.409]],.010,rxInset,g);sphere(rxInset,[side*.564,1.993,.417],[.044,.060,.023],g);box(mats.glass,[side*.566,1.993,.441],[.062,.084,.006],g);
 }
+// Rear working LEDs and three blue safety-line projectors, attached to the guard.
+for(const side of [-1,1]){
+ box(rxInset,[side*.36,1.885,.494],[.11,.078,.085],g);
+ box(mats.light,[side*.36,1.885,.540],[.084,.048,.010],g);
+ box(rxInset,[side*.485,1.84,.060],[.082,.085,.13],g,[0,0,-side*.25]);
+ box(blueProjectorLamp,[side*.531,1.827,.060],[.009,.040,.083],g,[0,0,-side*.25]);
+}
+box(rxInset,[0,1.851,.546],[.15,.083,.085],g,[-.3,0,0]);
+box(blueProjectorLamp,[0,1.836,.593],[.10,.038,.008],g,[-.3,0,0]);
 // Broad, shallow transverse roof ribs, with open gaps as in the reference.
 for(let [zz,yy] of [[-.47,2.009],[-.25,2.033],[-.015,2.029],[.21,1.993]]){
  const points=[[-.455,yy,zz],[-.29,yy+.017,zz],[0,yy+.022,zz],[.29,yy+.017,zz],[.455,yy,zz]];
@@ -1108,12 +1311,64 @@ function selectRisk(i,focus=true){selected=(i+risks.length)%risks.length;let r=r
 function markReviewed(){let r=risks[selected];if(reviewed.has(r.id))reviewed.delete(r.id);else reviewed.add(r.id);$('reviewCount').textContent=reviewed.size+' de '+risks.length+' revisados';selectRisk(selected,false)}
 function overview(){cameraOffset=[0,0,0];if(driving)setDrive(false);inspectTarget=[5,.2,4];azimuth=-.90;elevation=.68;zoom=70;notify('Vista geral da maquete · selecione os pontos numerados.',2)}
 for(let [i,r]of risks.entries()){let b=document.createElement('button');b.className='risk-item';let n=document.createElement('b');n.textContent=String(r.id).padStart(2,'0');let tx=document.createElement('span');tx.textContent=r.title;b.append(n,tx);b.onclick=()=>selectRisk(i);$('riskList').appendChild(b);listButtons.push(b);let h=document.createElement('button');h.className='hotspot';h.textContent=r.id;h.title=r.id+' · '+r.title;h.setAttribute('aria-label',r.id+' · '+r.title);h.onclick=()=>selectRisk(i);$('hotspots').appendChild(h);hotspotButtons.push(h)}
-$('previous').onclick=()=>selectRisk(selected-1);$('next').onclick=()=>selectRisk(selected+1);$('markReviewed').onclick=markReviewed;$('focusRisk').onclick=()=>focusRisk(selected);$('overview').onclick=overview;$('drive').onclick=()=>setDrive(!driving);$('pause').onclick=()=>setPaused(!paused);$('resetScene').onclick=resetScene;$('toggleRisks').onclick=()=>setMarkers(!showMarkers);$('help').onclick=()=>{if(driving)setPaused(true);$('helpDialog').showModal()};$('closeHelp').onclick=()=>$('helpDialog').close();$('quality').value=renderer.quality;$('quality').onchange=e=>{renderer.quality=e.target.value;renderer.frame=0};$('sound').onclick=()=>{soundOn=!soundOn;$('sound').textContent='Som: '+(soundOn?'ligado':'desligado');tone()};$('fullscreen').onclick=()=>{if(document.fullscreenElement)document.exitFullscreen?.();else document.documentElement.requestFullscreen?.().catch(()=>notify('Use a opção de tela cheia do navegador.'))};
+$('previous').onclick=()=>selectRisk(selected-1);$('next').onclick=()=>selectRisk(selected+1);$('markReviewed').onclick=markReviewed;$('focusRisk').onclick=()=>focusRisk(selected);$('overview').onclick=overview;$('drive').onclick=()=>setDrive(!driving);$('pause').onclick=()=>setPaused(!paused);$('resetScene').onclick=resetScene;$('toggleRisks').onclick=()=>setMarkers(!showMarkers);$('help').onclick=()=>{if(driving)setPaused(true);$('helpDialog').showModal()};$('closeHelp').onclick=()=>$('helpDialog').close();$('quality').value=renderer.quality;$('quality').onchange=e=>{renderer.quality=e.target.value;renderer.frame=0};$('sound').onclick=()=>{soundOn=!soundOn;$('sound').textContent='Som: '+(soundOn?'ligado':'desligado');tone()};// Tela cheia: oculta as barras inferiores sem alterar a cena ou o vídeo guiado.
+let fullscreenFallback=false,fullscreenBusy=false;
+function fullscreenElement(){return document.fullscreenElement||document.webkitFullscreenElement||null}
+function syncFullscreenLayout(){
+ const native=Boolean(fullscreenElement());
+ if(native)fullscreenFallback=false;
+ const expanded=native||fullscreenFallback,changed=document.body.classList.contains('fullscreen-clean')!==expanded;
+ document.body.classList.toggle('fullscreen-clean',expanded);
+ const button=$('fullscreen');
+ button.setAttribute('aria-pressed',String(expanded));
+ button.setAttribute('aria-label',expanded?(native?'Sair da tela cheia':'Sair da visualização ampliada'):'Tela cheia');
+ button.title=expanded?'Voltar à visualização normal (Esc)':'Tela cheia: ocultar comandos e informações inferiores';
+ if(changed){
+  keys.clear();document.querySelectorAll('[data-key].held').forEach(b=>b.classList.remove('held'));
+  if(expanded&&document.activeElement?.closest('.scene-toolbar, footer, .mobile-controls'))button.focus({preventScroll:true});
+  // O renderizador redimensiona o canvas e atualiza a projeção no próximo frame.
+  renderer.frame=0;
+ }
+}
+async function toggleCleanFullscreen(){
+ if(fullscreenBusy)return;
+ fullscreenBusy=true;
+ try{
+  if(fullscreenElement()){
+   const leave=document.exitFullscreen||document.webkitExitFullscreen;
+   if(leave)await leave.call(document);
+   else notify('Pressione Esc para sair da tela cheia.',3);
+  }else if(fullscreenFallback){
+   fullscreenFallback=false;
+  }else{
+   const enter=document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen;
+   if(enter){
+    try{await enter.call(document.documentElement)}
+    catch{fullscreenFallback=true;notify('Visualização ampliada nesta janela. Pressione Esc para voltar.',3)}
+   }else{
+    fullscreenFallback=true;notify('Visualização ampliada nesta janela. Pressione Esc para voltar.',3);
+   }
+  }
+ }catch{notify('Não foi possível mudar a tela cheia. Use Esc para sair.',3)}
+ finally{fullscreenBusy=false;syncFullscreenLayout()}
+}
+$('fullscreen').onclick=toggleCleanFullscreen;
+$('fullscreen').setAttribute('aria-controls','stage');
+document.addEventListener('fullscreenchange',syncFullscreenLayout);
+document.addEventListener('webkitfullscreenchange',syncFullscreenLayout);
+window.addEventListener('keydown',e=>{
+ if(e.key!=='Escape'||!fullscreenFallback||document.querySelector('dialog[open]'))return;
+ e.preventDefault();e.stopImmediatePropagation();fullscreenFallback=false;syncFullscreenLayout();
+},true);
+syncFullscreenLayout();
+
 function changeView(){cameraOffset=[0,0,0];if(!driving){overview();return}view=(view+1)%3;azimuth=view===1?0:.56;elevation=.33;zoom=6.5;$('camera').innerHTML='Câmera: '+['externa','cabine','aérea'][view]+' <kbd>C</kbd>';refreshStatus()}
 function switchTruck(){if(Math.abs(truckState.v)>.04){notify('Pare a empilhadeira antes de trocar.');return}keys.clear();active=(active+1)%fleet.length;truckState=fleet[active];cameraOffset=[0,0,0];if(straightDrive)truckState.steer=0;$('switchTruck').innerHTML='Veículo '+truckState.id+' <kbd>T</kbd>';if(!driving){inspectTarget=[truckState.x,truckState.baseY+1,truckState.z];zoom=7;azimuth=.6;elevation=.4}notify('Sesé · RX20-16 · veículo '+truckState.id,2)}
 $('camera').onclick=changeView;$('switchTruck').onclick=switchTruck;$('examineNearby').onclick=()=>{if(nearby)selectRisk(risks.indexOf(nearby))};
 function resetScene(){for(let s of fleet){let p=s.original;Object.assign(s,{x:p.x,z:p.z,yaw:p.yaw,height:p.h,tilt:0,side:0,v:0,steer:0,odometer:0,baseY:groundHeight(p.x,p.z)})}keys.clear();nearby=null;$('proximity').hidden=true;syncVehicles();notify('Posições e cargas restauradas.');if(!driving)overview()}
-renderer.lightProvider=()=>{const s=truckState,dir=V.norm([-Math.sin(s.yaw),-.26,-Math.cos(s.yaw)]);return [-.462,.462].map(x=>({position:localWorld(s,[x,1.861,-.85]),direction:dir,power:42,range:18,color:[.87,.94,1.],cone:.80}))};
+renderer.vehicleEffects=new VehicleLightEffects(renderer,fleet,roadTrucks,groundHeight,layout);
+renderer.activeLightVehicle=()=>truckState;
+renderer.lightProvider=()=>renderer.vehicleEffects.localLights();
 function localWorld(s,p){let c=Math.cos(s.yaw),n=Math.sin(s.yaw);return[s.x+c*p[0]+n*p[2],s.baseY+p[1],s.z-n*p[0]+c*p[2]]}
 function collisionDepth(s,x,z){let max=0,hit=null;const samples=[[0,0,.31,.45],[0,0,-.65,.50]];for(let l of samples){let p=localWorld({...s,x,z},l),r=l[3];for(let b of colliders){let cx=clamp(p[0],b.x-b.w/2,b.x+b.w/2),cz=clamp(p[2],b.z-b.d/2,b.z+b.d/2),d=r-Math.hypot(p[0]-cx,p[2]-cz);if(d>max){max=d;hit=b.tag}}for(let o of fleet){if(s===o||Math.abs(s.baseY-o.baseY)>.7)continue;let d=r+.65-Math.hypot(p[0]-o.x,p[2]-o.z);if(d>max){max=d;hit='outra empilhadeira'}}for(let o of workers){if(Math.abs(s.baseY-o.p[1])>.55)continue;let d=r+.30-Math.hypot(p[0]-o.p[0],p[2]-o.p[2]);if(d>max){max=d;hit='pessoa'}}}return{depth:max,hit}}
 function step(dt){if(!driving||paused)return;elapsed+=dt;let s=truckState,throttle=(keys.has('KeyW')?1:0)-(keys.has('KeyS')?1:0),turn=(keys.has('KeyA')?1:0)-(keys.has('KeyD')?1:0),brake=keys.has('Space');s.steer=straightDrive?0:mix(s.steer,turn*.80,1-Math.exp(-dt*4.5));let vmax=s.demoLoad?1.35:2.22,target=brake?0:throttle*(throttle<0?1.1:vmax),acc=brake?3.2:throttle===0?1.15:s.demoLoad?.65:.95;s.v+=clamp(target-s.v,-acc*dt,acc*dt);if(Math.abs(s.v)<.005)s.v=0;let previousYaw=s.yaw,before=collisionDepth(s,s.x,s.z);s.yaw+=s.v*Math.tan(s.steer)/1.341*dt;let nx=s.x-Math.sin(s.yaw)*s.v*dt,nz=s.z-Math.cos(s.yaw)*s.v*dt,after=collisionDepth(s,nx,nz),drop=Math.abs(groundHeight(nx,nz)-s.baseY)>.27;let moving=Math.abs(s.v)>.001;if(moving&&((after.depth>0&&after.depth>=before.depth-.00001)||drop)){s.yaw=previousYaw;s.v=0;if(elapsed-lastHit>2){lastHit=elapsed;notify(drop?'Desnível da doca: possibilidade de queda. A simulação interrompeu o avanço.':'Contato simulado com '+after.hit+'. Observe a exposição ao acidente.',4);tone(240)}}else{s.x=nx;s.z=nz;s.baseY=groundHeight(nx,nz);s.odometer+=s.v*dt}
@@ -1143,7 +1398,7 @@ $('scene').addEventListener('wheel',e=>{e.preventDefault();if(riskVideo.active)r
 window.addEventListener('keydown',e=>{if(riskVideo.active)return;if(e.target.closest?.('#clockToggle')&&e.code==='Space')return;if($('helpDialog').open||!$('timePanel').hidden||e.target.isContentEditable||['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return;if(!driving&&(e.code==='ArrowLeft'||e.code==='ArrowRight')){e.preventDefault();selectRisk(selected+(e.code==='ArrowLeft'?-1:1));return}let k=({ArrowUp:'KeyW',ArrowDown:'KeyS',ArrowLeft:'KeyA',ArrowRight:'KeyD'})[e.code]||e.code;if(['KeyW','KeyS','KeyA','KeyD','KeyR','KeyV','KeyQ','KeyE','KeyZ','KeyX','Space','KeyP','KeyC','KeyT','KeyF','KeyH','KeyL','KeyM','KeyN'].includes(k))e.preventDefault();if(!e.repeat){if(k==='KeyN'){setMarkers(!showMarkers);return}if(k==='KeyP'&&driving)setPaused(!paused);if(k==='KeyC')changeView();if(k==='KeyT')switchTruck();if(k==='KeyF'&&nearby)selectRisk(risks.indexOf(nearby));if(k==='KeyH')tone(390);if(k==='KeyL'&&driving)setStraight(!straightDrive);if(k==='KeyM')setDragMode(dragMode==='pan'?'orbit':'pan')}keys.add(k)});window.addEventListener('keyup',e=>keys.delete(({ArrowUp:'KeyW',ArrowDown:'KeyS',ArrowLeft:'KeyA',ArrowRight:'KeyD'})[e.code]||e.code));window.addEventListener('blur',()=>{pointers.clear();drag=null;gesture=null;keys.clear();if(driving)setPaused(true)});document.addEventListener('visibilitychange',()=>{if(document.hidden&&driving)setPaused(true)});
 for(let b of document.querySelectorAll('[data-key]')){let release=()=>{keys.delete(b.dataset.key);b.classList.remove('held')};b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture(e.pointerId);keys.add(b.dataset.key);b.classList.add('held')});for(let event of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(event,release)}
 function loop(now){const raw=Math.max(0,(now-last)/1000);let dt=Math.min(raw,.05);last=now;riskVideo.tick(Math.min(raw,2));moveCamera(dt);for(let remaining=dt;remaining>0;){let d=Math.min(remaining,1/60);step(d);remaining-=d}syncVehicles();cameraFrame(dt);if(frames++%4===0)refreshStatus();requestAnimationFrame(loop)}
-document.querySelector('.download').href=location.href;document.querySelector('.download').download='simulador_sese_video_dos_riscos.html';
+document.querySelector('.download').href=location.href;document.querySelector('.download').download='simulador_sese_video_tela_cheia_limpa.html';
 $('scene').addEventListener('webglcontextlost',e=>{e.preventDefault();setPaused(true);if(riskVideo.active){riskVideo.pause();riskVideo.stopRecording(false)}$('error').hidden=false;$('error').querySelector('p').textContent='O ambiente 3D foi interrompido. Use Tentar novamente para recarregar o simulador.'});
 /* Vídeo guiado por capítulos. Os textos são lidos diretamente de risks.
  * Não modifica a lista de riscos, os registros de revisão nem os modelos.
@@ -1374,7 +1629,7 @@ const riskVideo = (()=>{
  return{get active(){return state.active},get playing(){return state.playing},get time(){return state.time},get duration(){return duration},get index(){return state.index},get state(){return{active:state.active,playing:state.playing,time:state.time,index:state.index,phase:state.phase,ended:state.ended,speed:state.speed,visited:[...state.visited],recording:Boolean(state.recording)}},chapters,shots,start,exit,play,pause,seek,chapter,tick,pose,afterFrame,startRecording,stopRecording};
 })();
 
-selectRisk(16,false);overview();syncVehicles();setMarkers(true);refreshStatus();window.SIM={video:riskVideo,time:sceneClock,fleet,roadTrucks,layout,colliders,risks,workers,renderer,root,keys,get active(){return truckState},get nearby(){return nearby},get driving(){return driving},get paused(){return paused},get selected(){return selected},get reviewed(){return reviewed},get camera(){return{eye,target:cameraTarget,view:Array.from(viewProjection)}},get straightDrive(){return straightDrive},get dragMode(){return dragMode},get showMarkers(){return showMarkers},setMarkers,setPanel,setStraight,setDragMode,panCamera,moveCamera,translateCamera,step,syncVehicles,setDrive,setPaused,resetScene,selectRisk,markReviewed,switchTruck,collisionDepth,groundHeight,overview,cameraFrame};requestAnimationFrame(loop);
+selectRisk(16,false);overview();syncVehicles();setMarkers(true);refreshStatus();window.SIM={lighting:renderer.vehicleEffects,video:riskVideo,time:sceneClock,fleet,roadTrucks,layout,colliders,risks,workers,renderer,root,keys,get active(){return truckState},get nearby(){return nearby},get driving(){return driving},get paused(){return paused},get selected(){return selected},get reviewed(){return reviewed},get camera(){return{eye,target:cameraTarget,view:Array.from(viewProjection)}},get straightDrive(){return straightDrive},get dragMode(){return dragMode},get showMarkers(){return showMarkers},setMarkers,setPanel,setStraight,setDragMode,panCamera,moveCamera,translateCamera,step,syncVehicles,setDrive,setPaused,resetScene,selectRisk,markReviewed,switchTruck,collisionDepth,groundHeight,overview,cameraFrame};requestAnimationFrame(loop);
 }catch(e){console.error(e);$('error').hidden=false;$('error').querySelector('p').textContent=e.message}
 })();
 </script></body></html>
